@@ -23,7 +23,7 @@ const menuItems = [
   { text: ' Books', icon: <BookIcon />, key: 'free-books' },
   { text: 'Blogs', icon: <FormatListBulletedIcon />, key: 'blog' },
   { text: 'Webstories', icon: <WebIcon />, key: 'webstories' },
-  { text: 'Plans', icon: <AccountTreeIcon />, key: 'plan' },
+ 
   { text: 'Mock Tests', icon: <AssignmentTurnedInIcon />, key: 'mock-tests' }
 ];
 
@@ -90,10 +90,7 @@ const Dashboard = () => {
             Webstories Page
           </Typography>
         );
-      case 'plan':
-        return (
-          <PlanContent/>
-        );
+     
       case 'mock-tests':
         return (
           <Typography variant="h4" sx={{ color: '#003366' }} gutterBottom>
