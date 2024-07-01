@@ -3,10 +3,18 @@ import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Hidden, CssBaseline, Box, Menu, MenuItem } from '@mui/material';
 import { Menu as MenuIcon, Dashboard as DashboardIcon, AccountCircle as AccountCircleIcon, Settings as SettingsIcon, ExitToApp as ExitToAppIcon, Assignment as AssignmentIcon, Description as DescriptionIcon, CheckCircle as CheckCircleIcon, ListAlt as ListAltIcon, Book as BookIcon, ChromeReaderMode as ChromeReaderModeIcon, Web as WebIcon, AccountTree as AccountTreeIcon, AssignmentTurnedIn as AssignmentTurnedInIcon, FormatListBulleted as FormatListBulletedIcon } from '@mui/icons-material';
 
+import Jobs from "./Jobs"
+import Blogs from "./Blogs"
+import AdmitCard from "./AdmitCard"
+import Results from "./Results"
+import  AnswersKey from "./AnswersKey"
+import OldPaper from "./OldPaper"
+import Books from "./Books"
+
 const drawerWidth = 240;
 
 const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, key: 'dashboard' },
+  
   { text: 'Jobs', icon: <AssignmentIcon />, key: 'jobs' },
   { text: 'Admit Cards', icon: <DescriptionIcon />, key: 'admit-cards' },
   { text: 'Results', icon: <CheckCircleIcon />, key: 'results' },
@@ -46,58 +54,55 @@ const Dashboard = () => {
   };
 
   const renderContent = () => {
-    // switch (content) {
-    //   case 'dashboard':
-    //     return (
-    //       <DashboardContent/>
-    //     );
-    //   case 'jobs':
-    //     return (
-    //       <JobsContent/>
-    //     );
-    //   case 'admit-cards':
-    //     return (
-    //       <AdmitCardContent/>
-    //     );
-    //   case 'results':
-    //     return (
-    //       <ResultsContent/>
-    //     );
-    //   case 'answers-key':
-    //     return (
-    //       <AnswersKeyContent/>
-    //     );
-    //   case 'old-paper':
-    //     return (
-    //     <OldPaperContent/>
-    //     );
-    //   case 'free-books':
-    //     return (
-    //      <FreeBooksContent/>
-    //     );
-    //   case 'blog':
-    //     return (
-    //      <BlogsContent/>
-    //     );
-    //   case 'webstories':
-    //     return (
-    //       <Typography variant="h4" sx={{ color: '#003366' }} gutterBottom>
-    //         Webstories Page
-    //       </Typography>
-    //     );
-    //   case 'plan':
-    //     return (
-    //       <PlanContent/>
-    //     );
-    //   case 'mock-tests':
-    //     return (
-    //       <Typography variant="h4" sx={{ color: '#003366' }} gutterBottom>
-    //         Mock Tests Page
-    //       </Typography>
-    //     );
-    //   default:
-    //     return null;
-    // }
+    switch (content) {
+     
+      case 'jobs':
+        return (
+          <Jobs/>
+        );
+      case 'admit-cards':
+        return (
+          <AdmitCard/>
+        );
+      case 'results':
+        return (
+          <Results/>
+        );
+      case 'answers-key':
+        return (
+          <AnswersKey/>
+        );
+      case 'old-paper':
+        return (
+        <OldPaper/>
+        );
+      case 'free-books':
+        return (
+         <Books/>
+        );
+      case 'blog':
+        return (
+         <Blogs/>
+        );
+      case 'webstories':
+        return (
+          <Typography variant="h4" sx={{ color: '#003366' }} gutterBottom>
+            Webstories Page
+          </Typography>
+        );
+      case 'plan':
+        return (
+          <PlanContent/>
+        );
+      case 'mock-tests':
+        return (
+          <Typography variant="h4" sx={{ color: '#003366' }} gutterBottom>
+            Mock Tests Page
+          </Typography>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
