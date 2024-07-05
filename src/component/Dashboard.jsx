@@ -105,7 +105,7 @@ const Dashboard = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#003366' }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#3B4B5C' }}>
   <Toolbar sx={{ justifyContent: 'space-between' }}>
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Hidden mdUp>
@@ -178,7 +178,7 @@ const Dashboard = () => {
             flexShrink: 0,
             '& .MuiDrawer-paper': {
               width: drawerWidth,
-              backgroundColor: '#003366',
+              backgroundColor: '#3B4B5C',
               color: '#fff',
             },
           }}
@@ -187,7 +187,7 @@ const Dashboard = () => {
           <Box sx={{ overflow: 'auto' }}>
             <List>
               {menuItems.map((item) => (
-                <ListItem button key={item.key} onClick={() => handleItemClick(item.key)} sx={{ '&:hover': { backgroundColor: '#00509E' } }}>
+                <ListItem button key={item.key} onClick={() => handleItemClick(item.key)} sx={{ '&:hover': { backgroundColor: '#54c6ff' } }}>
                   <ListItemIcon sx={{ color: '#fff' }}>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} sx={{ color: '#fff' }} />
                 </ListItem>
@@ -207,7 +207,7 @@ const Dashboard = () => {
           flexShrink: 0,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
-            backgroundColor: '#003366',
+            backgroundColor: '#3B4B5C',
             color: '#fff',
           },
         }}
@@ -216,7 +216,7 @@ const Dashboard = () => {
         <Box sx={{ overflow: 'auto' }}>
           <List>
             {menuItems.map((item) => (
-              <ListItem button key={item.key} onClick={() => handleItemClick(item.key)} sx={{ '&:hover': { backgroundColor: '#00509E' } }}>
+              <ListItem button key={item.key} onClick={() => handleItemClick(item.key)} sx={{ '&:hover': { backgroundColor: '#54c6ff' } }}>
                 <ListItemIcon sx={{ color: '#fff' }}>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} sx={{ color: '#fff' }} />
               </ListItem>

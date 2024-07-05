@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import {
@@ -12,6 +12,11 @@ import {
   Card,
   CardContent,
   CardActions,
+  FormControl,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { Add as AddIcon, Close as CloseIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { FaInfoCircle } from 'react-icons/fa';
@@ -23,7 +28,7 @@ import { _create, _getAll, _update, _delete } from '../../utils/apiUtils'; // Im
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
 const StyledHeading = styled('div')({
-  ' & h2, & h3, & h4, & h5, & h6': {
+  '& h2, & h3, & h4, & h5, & h6': {
     backgroundColor: 'blue',
     color: 'white !important',
     padding: '10px',
@@ -34,11 +39,20 @@ const StyledHeading = styled('div')({
 
 const Jobs = () => {
   const [openModal, setOpenModal] = useState(false);
-  const [formData, setFormData] = useState({ title: '', content: '', created_by: 'Anonymous' });
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    slug: '',
+    state: '',
+    categories: [],
+  });
   const [jobs, setJobs] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [currentJobId, setCurrentJobId] = useState(null);
   const editor = useRef(null);
+
+  const categoriesList = ['Category 1', 'Category 2', 'Category 3']; // Example categories
+  const statesList = ['Uttar Pradesh', 'Maharashtra', 'Karnataka', 'Tamil Nadu', 'West Bengal']; // Example states
 
   useEffect(() => {
     fetchJobs(); // Load jobs on component mount
@@ -55,11 +69,23 @@ const Jobs = () => {
 
   const handleOpenModal = (job = null) => {
     if (job) {
-      setFormData({ title: job.title, content: job.content, created_by: job.created_by });
+      setFormData({
+        title: job.title,
+        content: job.content,
+        slug: job.slug,
+        state: job.state,
+        categories: job.categories,
+      });
       setIsEdit(true);
       setCurrentJobId(job.id);
     } else {
-      setFormData({ title: '', content: '', created_by: 'Anonymous' });
+      setFormData({
+        title: '',
+        content: '',
+        slug: '',
+        state: '',
+        categories: [],
+      });
       setIsEdit(false);
       setCurrentJobId(null);
     }
@@ -75,12 +101,23 @@ const Jobs = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleCategoryChange = (category) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      categories: prevState.categories.includes(category)
+        ? prevState.categories.filter((cat) => cat !== category)
+        : [...prevState.categories, category],
+    }));
+  };
+
   const handleSubmit = async () => {
     try {
       const newJob = {
         title: formData.title,
         content: formData.content,
-        created_by: formData.created_by,
+        slug: formData.slug,
+        state: formData.state,
+        categories: formData.categories,
       };
 
       if (isEdit) {
@@ -143,10 +180,10 @@ const Jobs = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          name="created_by"
-          label="Created By"
+          name="slug"
+          label="Slug"
           type="text"
-          value={formData.created_by}
+          value={formData.slug}
           onChange={handleChange}
           InputProps={{
             startAdornment: (
@@ -157,13 +194,63 @@ const Jobs = () => {
           }}
         />
       </Grid>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
+          name="state"
+          select
+          label="State"
+          SelectProps={{
+            native: true,
+          }}
+          value={formData.state}
+          onChange={handleChange}
+        >
+          <option value="">Select State</option>
+          {statesList.map((state) => (
+            <option key={state} value={state}>
+              {state}
+            </option>
+          ))}
+        </TextField>
+      </Grid>
+      <Grid item xs={12}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Categories</FormLabel>
+          <FormGroup>
+            {categoriesList.map((category) => (
+              <FormControlLabel
+                key={category}
+                control={
+                  <Checkbox
+                    checked={formData.categories.includes(category)}
+                    onChange={() => handleCategoryChange(category)}
+                    name={category}
+                  />
+                }
+                label={category}
+              />
+            ))}
+          </FormGroup>
+        </FormControl>
+      </Grid>
     </>
   );
 
   return (
     <div>
       <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => handleOpenModal()}>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: '#3B4B5C',
+            '&:hover': {
+              backgroundColor: '#54c6ff',
+            },
+          }}
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenModal()}
+        >
           Add Jobs
         </Button>
       </Box>
