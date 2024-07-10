@@ -12,7 +12,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Add as AddIcon, Close as CloseIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { FaInfoCircle } from 'react-icons/fa';
 import { styled } from '@mui/system';
 import { _create, _getAll, _update, _delete } from '../../utils/apiUtils';
 import SearchIcon from '@mui/icons-material/Search';
@@ -30,81 +29,63 @@ const StyledHeading = styled('div')({
   },
 });
 
-const Blog = () => {
+const Webstories = () => {
   const [openModal, setOpenModal] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
     title: '',
-    category: '',
-    contentPage: '',
-    image: '',
-    content: '',
+    shortDescription: '',
+    images: '',
+    slug: '',
     metaTitle: '',
     metaDescription: '',
     canonicalUrl: '',
-    slug: '',
-    createdAt: '',
-    updatedAt: '',
-    createdBy: '',
   });
-  const [blogs, setBlogs] = useState([]);
-  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [webstories, setWebstories] = useState([]);
+  const [filteredWebstories, setFilteredWebstories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [currentBlogId, setCurrentBlogId] = useState(null);
+  const [currentWebstoryId, setCurrentWebstoryId] = useState(null);
   const editor = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchBlogs();
+    fetchWebstories();
   }, []);
 
-  const fetchBlogs = async () => {
+  const fetchWebstories = async () => {
     try {
-      const blogsData = await _getAll('api/blogs');
-      setBlogs(blogsData);
-      setFilteredBlogs(blogsData);
+      const webstoriesData = await _getAll('api/webstories');
+      setWebstories(webstoriesData);
+      setFilteredWebstories(webstoriesData);
     } catch (error) {
-      console.error('Error fetching blogs:', error);
+      console.error('Error fetching webstories:', error);
     }
   };
 
-  const handleOpenModal = (blog = null) => {
-    if (blog) {
+  const handleOpenModal = (webstory = null) => {
+    if (webstory) {
       setFormData({
-        name: blog.name,
-        title: blog.title,
-        category: blog.category,
-        contentPage: blog.contentPage,
-        image: blog.image || '',
-        content: blog.content || '',
-        metaTitle: blog.metaTitle || '',
-        metaDescription: blog.metaDescription || '',
-        canonicalUrl: blog.canonicalUrl || '',
-        slug: blog.slug || '',
-        createdAt: blog.createdAt || '',
-        updatedAt: blog.updatedAt || '',
-        createdBy: blog.createdBy || '',
+        title: webstory.title,
+        shortDescription: webstory.shortDescription,
+        images: webstory.images || '',
+        slug: webstory.slug || '',
+        metaTitle: webstory.metaTitle || '',
+        metaDescription: webstory.metaDescription || '',
+        canonicalUrl: webstory.canonicalUrl || '',
       });
       setIsEdit(true);
-      setCurrentBlogId(blog.id);
+      setCurrentWebstoryId(webstory.id);
     } else {
       setFormData({
-        name: '',
         title: '',
-        category: '',
-        contentPage: '',
-        image: '',
-        content: '',
+        shortDescription: '',
+        images: '',
+        slug: '',
         metaTitle: '',
         metaDescription: '',
         canonicalUrl: '',
-        slug: '',
-        createdAt: '',
-        updatedAt: '',
-        createdBy: '',
       });
       setIsEdit(false);
-      setCurrentBlogId(null);
+      setCurrentWebstoryId(null);
     }
     setOpenModal(true);
   };
@@ -119,64 +100,60 @@ const Blog = () => {
   };
 
   const handleChangeEditor = (content) => {
-    setFormData({ ...formData, content: content });
+    setFormData({ ...formData, shortDescription: content });
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, image: file.name });
+      setFormData({ ...formData, images: file.name });
     } else {
-      setFormData({ ...formData, image: '' });
+      setFormData({ ...formData, images: '' });
     }
   };
 
   const handleSubmit = async () => {
     try {
-      const newBlog = { ...formData };
+      const newWebstory = { ...formData };
 
       if (isEdit) {
-        await _update(`api/blogs/${currentBlogId}`, newBlog);
-        setBlogs(blogs.map((blog) => (blog.id === currentBlogId ? { ...blog, ...newBlog } : blog)));
-        setFilteredBlogs(filteredBlogs.map((blog) => (blog.id === currentBlogId ? { ...blog, ...newBlog } : blog)));
+        await _update(`api/webstories/${currentWebstoryId}`, newWebstory);
+        setWebstories(webstories.map((webstory) => (webstory.id === currentWebstoryId ? { ...webstory, ...newWebstory } : webstory)));
+        setFilteredWebstories(filteredWebstories.map((webstory) => (webstory.id === currentWebstoryId ? { ...webstory, ...newWebstory } : webstory)));
       } else {
-        const response = await _create('api/blogs', newBlog);
-        setBlogs([...blogs, response]);
-        setFilteredBlogs([...filteredBlogs, response]);
+        const response = await _create('api/webstories', newWebstory);
+        setWebstories([...webstories, response]);
+        setFilteredWebstories([...filteredWebstories, response]);
       }
 
       handleCloseModal();
     } catch (error) {
-      console.error('Error submitting blog:', error);
+      console.error('Error submitting webstory:', error);
     }
   };
 
-  const handleDelete = async (blogId) => {
+  const handleDelete = async (webstoryId) => {
     try {
-      await _delete(`/api/blogs/${blogId}`);
-      setBlogs(blogs.filter((blog) => blog.id !== blogId));
-      setFilteredBlogs(filteredBlogs.filter((blog) => blog.id !== blogId));
+      await _delete(`/api/webstories/${webstoryId}`);
+      setWebstories(webstories.filter((webstory) => webstory.id !== webstoryId));
+      setFilteredWebstories(filteredWebstories.filter((webstory) => webstory.id !== webstoryId));
     } catch (error) {
-      console.error('Error deleting blog:', error);
+      console.error('Error deleting webstory:', error);
     }
   };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filtered = blogs.filter((blog) =>
-      blog.name.toLowerCase().includes(query.toLowerCase())
+    const filtered = webstories.filter((webstory) =>
+      webstory.title.toLowerCase().includes(query.toLowerCase())
     );
-    setFilteredBlogs(filtered);
+    setFilteredWebstories(filtered);
   };
 
   const columns = [
-    
     { field: 'title', headerName: 'Title', flex: 1 },
-    { field: 'category', headerName: 'Category', flex: 1 },
-   
-    { field: 'image', headerName: 'Image', flex: 1 },
-    { field: 'content', headerName: 'Content', flex: 1 },
-  
+    { field: 'shortDescription', headerName: 'Short Description', flex: 1 },
+    { field: 'images', headerName: 'Images', flex: 1 },
     { field: 'createdAt', headerName: 'Created Date', flex: 1, type: 'date' },
     { field: 'updatedAt', headerName: 'Updated Date', flex: 1, type: 'date' },
     { field: 'createdBy', headerName: 'Created By', flex: 1 },
@@ -197,21 +174,15 @@ const Blog = () => {
     },
   ];
 
-  const rows = filteredBlogs.map((blog) => ({
-    id: blog.id,
-    name: blog.name,
-    title: blog.title,
-    category: blog.category,
-    contentPage: blog.contentPage,
-    image: blog.image,
-    content: blog.content,
-    metaTitle: blog.metaTitle,
-    metaDescription: blog.metaDescription,
-    canonicalUrl: blog.canonicalUrl,
-    slug: blog.slug,
-    createdAt: new Date(blog.createdAt), // Convert to Date object
-    updatedAt: new Date(blog.updatedAt), // Convert to Date object
-    createdBy: blog.createdBy,
+  const rows = filteredWebstories.map((webstory) => ({
+    id: webstory.id,
+    title: webstory.title,
+    shortDescription: webstory.shortDescription,
+    images: webstory.images,
+    slug: webstory.slug,
+    metaTitle: webstory.metaTitle,
+    metaDescription: webstory.metaDescription,
+    canonicalUrl: webstory.canonicalUrl,
   }));
 
   return (
@@ -228,7 +199,7 @@ const Blog = () => {
           fontSize: '28px',
         }}
       >
-        Blog
+        Webstories
       </Typography>
       <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -258,7 +229,7 @@ const Blog = () => {
             startIcon={<AddIcon />}
             onClick={() => handleOpenModal()}
           >
-            Add Blog
+            Add Webstory
           </Button>
         </div>
       </Box>
@@ -286,7 +257,7 @@ const Blog = () => {
         >
           <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h5" id="modal-title" sx={{ fontWeight: 'bold' }}>
-              {isEdit ? 'Edit Blog' : 'Add New Blog'}
+              {isEdit ? 'Edit Webstory' : 'Add New Webstory'}
             </Typography>
             <IconButton onClick={handleCloseModal}>
               <CloseIcon />
@@ -298,17 +269,6 @@ const Blog = () => {
               <TextField
                 fullWidth
                 required
-                label="Name"
-                variant="outlined"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                required
                 label="Title"
                 variant="outlined"
                 name="title"
@@ -316,26 +276,15 @@ const Blog = () => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                required
-                label="Category"
-                variant="outlined"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                required
-                label="Content Page"
-                variant="outlined"
-                name="contentPage"
-                value={formData.contentPage}
-                onChange={handleChange}
+            <Grid item xs={12}>
+              <StyledHeading>
+                <Typography >Short Description</Typography>
+              </StyledHeading>
+              <JoditEditor
+                ref={editor}
+                value={formData.shortDescription}
+                tabIndex={1}
+                onChange={handleChangeEditor}
               />
             </Grid>
             <Grid item xs={12}>
@@ -351,18 +300,19 @@ const Blog = () => {
               />
               {formData.image && <Typography>{formData.image}</Typography>}
             </Grid>
-            <Grid item xs={12}>
-              <JoditEditor
-                ref={editor}
-                value={formData.content}
-                tabIndex={1}
-                onChange={(content) => handleChangeEditor(content)}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Slug"
+                variant="outlined"
+                name="slug"
+                value={formData.slug}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                required
                 label="Meta Title"
                 variant="outlined"
                 name="metaTitle"
@@ -373,7 +323,6 @@ const Blog = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                required
                 label="Meta Description"
                 variant="outlined"
                 name="metaDescription"
@@ -384,7 +333,6 @@ const Blog = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                required
                 label="Canonical URL"
                 variant="outlined"
                 name="canonicalUrl"
@@ -392,44 +340,30 @@ const Blog = () => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                required
-                label="Slug"
-                variant="outlined"
-                name="slug"
-                value={formData.slug}
-                onChange={handleChange}
-              />
+            <Grid item xs={12} sx={{ textAlign: 'right' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                sx={{
+                  backgroundColor: '#3B4B5C',
+                  '&:hover': {
+                    backgroundColor: '#54c6ff',
+                  },
+                }}
+              >
+                {isEdit ? 'Update' : 'Create'}
+              </Button>
             </Grid>
           </Grid>
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: '#3B4B5C', '&:hover': { backgroundColor: '#54c6ff' } }}
-              onClick={handleSubmit}
-            >
-              {isEdit ? 'Update Blog' : 'Add Blog'}
-            </Button>
-          </Box>
         </Box>
       </Modal>
 
-      {/* Displaying Blogs */}
-      <Box sx={{ mt: 4 }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5, 10, 20]}
-          checkboxSelection
-          disableSelectionOnClick
-        />
+      <Box sx={{ height: 500, width: '100%' }}>
+        <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]} />
       </Box>
     </div>
   );
 };
 
-export default Blog;
+export default Webstories;
