@@ -1,4 +1,3 @@
-"use client"
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -18,7 +17,10 @@ import CustomSearchField from "./CustomSearchField";
 import CustomTypography from "./CustomTypography";
 import CustomTextFieldWithIcon from "./CustomTextFieldWithIcon";
 import CustomJoditEditor from "./CustomJoditEditor";
+import CustomTable from "./CustomTable";
 import { _delete, _getAll, _update, _create } from '../../utils/apiUtils';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const Jobs = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -167,8 +169,24 @@ const Jobs = () => {
   };
 
   const handleDownloadExcel = () => {
-    // Implement Excel download logic here
+    try {
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(jobs);
+      XLSX.utils.book_append_sheet(wb, ws, 'Jobs Data');
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
+      saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'jobs_data.xlsx');
+    } catch (error) {
+      console.error('Error exporting data to Excel:', error);
+    }
   };
+  
+
+  const headers = [
+    { column: 'title', label: 'Job Title' },
+    { column: 'createdAt', label: 'Created At' },
+    { column: 'updatedAt', label: 'Updated At' },
+    { column: 'created_by', label: 'Created By' },
+  ];
 
   return (
     <div>
@@ -269,75 +287,21 @@ const Jobs = () => {
           >
             <CustomButton text={isEdit ? 'Update Job' : 'Add Job'} onClick={handleSubmit} />
           </Box>
-
         </Box>
       </Modal>
 
       <Box sx={{ mt: 2 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <SortableHeader
-                column="title"
-                label="Title"
-                currentSort={sortBy}
-                currentDirection={sortDirection}
-                onClick={handleSort}
-              />
-              <SortableHeader
-                column="description"
-                label="Description"
-                currentSort={sortBy}
-                currentDirection={sortDirection}
-                onClick={handleSort}
-              />
-              <SortableHeader
-                column="state"
-                label="State"
-                currentSort={sortBy}
-                currentDirection={sortDirection}
-                onClick={handleSort}
-              />
-              <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredJobs.map((job) => (
-              <tr key={job.id}>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{job.title}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{job.description}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{job.state}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  <IconButton onClick={() => handleOpenModal(job)} size="small">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(job.id)} size="small">
-                    <DeleteIcon />
-                  </IconButton>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <CustomTable
+          headers={headers}
+          data={filteredJobs}
+          onSort={handleSort}
+          currentSort={sortBy}
+          currentDirection={sortDirection}
+          onEdit={handleOpenModal}
+          onDelete={handleDelete}
+        />
       </Box>
     </div>
-  );
-};
-
-const SortableHeader = ({ column, label, currentSort, currentDirection, onClick }) => {
-  const isCurrentSort = currentSort === column;
-  const isAscending = currentDirection === 'asc';
-
-  return (
-    <th
-      style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left', cursor: 'pointer' }}
-      onClick={() => onClick(column)}
-    >
-      {label}{' '}
-      {isCurrentSort &&
-        (isAscending ? <span>&uarr;</span> : <span>&darr;</span>)
-      }
-    </th>
   );
 };
 
